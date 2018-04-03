@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class JdbcVerticle extends AbstractVerticle {
     private static final Logger logger = LoggerFactory.getLogger(JdbcVerticle.class);
-    private static final String CONFIG_FILE = "examples/src/config/app-conf.json";
+    private static final String CONFIG_FILE = "src/config/app-conf.json";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE Product(PROD_ID VARCHAR(20) PRIMARY KEY, PROD_NAME VARCHAR(200) NOT NULL)";
     private static final String SQL_INSERT_PRODUCT = "INSERT INTO Product(PROD_ID, PROD_NAME) VALUES (?, ?)";
     private static final String SQL_SELECT_PRODUCTS = "SELECT * FROM Product";

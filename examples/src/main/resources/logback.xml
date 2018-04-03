@@ -27,7 +27,8 @@
   <logger name="com.mchange.v2" level="warn"/>
   <logger name="io.netty" level="warn"/>
   <logger name="io.vertx" level="info"/>
-  <logger name="com.example.mystore" level="debug"/>
+  <logger name="com.hazelcast" level="info"/>
+  <logger name="com.example" level="debug"/>
 
   <root level="debug">
     <appender-ref ref="STDOUT"/>
