@@ -22,7 +22,7 @@ public class GatewayVerticle extends AbstractVerticle {
     private static final String PREFIX_SERVICE = "/service/";
     private ServiceDiscovery discovery;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Vertx.rxClusteredVertx(new VertxOptions().setClustered(true))
                 .flatMap(vertx -> vertx.rxDeployVerticle(GatewayVerticle.class.getName()))
                 .subscribe(id -> logger.debug("GatewayVerticle deployed successfully"));
@@ -47,7 +47,8 @@ public class GatewayVerticle extends AbstractVerticle {
     private void configureRouter(Router router) {
         router.route().handler(BodyHandler.create());
         router.route(PREFIX_SERVICE + "*").handler(this::serviceHandler);
-        router.route("/").handler(this::indexHandler);
+        String regexMatcher = "^(?!" + PREFIX_SERVICE + ").*";
+        router.routeWithRegex(regexMatcher).handler(this::indexHandler);
     }
 
     private void indexHandler(RoutingContext context) {
