@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EventBusApp {
-    private static final Logger logger = LoggerFactory.getLogger(ReceiverVerticle.class);
+    private static final Logger logger = LoggerFactory.getLogger(EventBusApp.class);
 
     public static void main(String[] args) {
         logger.debug("Start deploy receivers");

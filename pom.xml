@@ -7,16 +7,16 @@
   <groupId>com.example</groupId>
   <artifactId>microservices</artifactId>
   <version>0.1.0-SNAPSHOT</version>
-<packaging>pom</packaging>
+  <packaging>pom</packaging>
   <properties>
     <java.version>1.8</java.version>
     <vertx.version>3.5.1</vertx.version>
-	<!--overridden in each project -->
+    <!--overridden in each project -->
     <main.verticle/>
   </properties>
 
   <modules>
-	<module>examples</module>
+    <module>examples</module>
   </modules>
   <build>
     <plugins>
@@ -39,7 +39,7 @@
         </configuration>
       </plugin>
     </plugins>
-	<pluginManagement>
+    <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -70,18 +70,18 @@
             </execution>
           </executions>
         </plugin>
-		 <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.5.0</version>
-        <configuration>
-          <mainClass>io.vertx.core.Launcher</mainClass>
-          <arguments>
-            <argument>run</argument>
-            <argument>${main.verticle}</argument>
-          </arguments>
-        </configuration>
-      </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.5.0</version>
+          <configuration>
+            <mainClass>io.vertx.core.Launcher</mainClass>
+            <arguments>
+              <argument>run</argument>
+              <argument>${main.verticle}</argument>
+            </arguments>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -108,7 +108,6 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-jdbc-client</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-proxy</artifactId>
@@ -116,6 +115,14 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-rx-java2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-service-discovery</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>

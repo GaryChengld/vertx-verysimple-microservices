@@ -17,14 +17,13 @@ public class SenderVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         logger.debug("Start Sender verticle");
         EventBus eventBus = vertx.eventBus();
         eventBus.publish("anAddress", "Published a message");
 
-        vertx.setPeriodic(1000, id -> {
-            eventBus.rxSend("anAddress", "A message")
-                    .subscribe(reply -> logger.debug("Received reply:{}", reply.body()));
-        });
+        vertx.setPeriodic(1000, id ->
+                eventBus.rxSend("anAddress", "A message").subscribe(reply -> logger.debug("Received reply:{}", reply.body()))
+        );
     }
 }

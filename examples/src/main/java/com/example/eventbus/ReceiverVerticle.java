@@ -22,13 +22,10 @@ public class ReceiverVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void start() throws Exception {
+    public void start() {
         this.name = config().getString("name");
         logger.debug("Starting Receiver verticle, name:{}", name);
-        vertx.eventBus()
-                .<String>consumer("anAddress")
-                .toFlowable()
-                .subscribe(message -> this.onMessage(message));
+        vertx.eventBus().<String>consumer("anAddress").toFlowable().subscribe(this::onMessage);
     }
 
     private void onMessage(Message<String> message) {
