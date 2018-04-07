@@ -22,14 +22,14 @@ public class GatewayVerticle extends AbstractVerticle {
     private static final String PREFIX_SERVICE = "/service/";
     private ServiceDiscovery discovery;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Vertx.rxClusteredVertx(new VertxOptions().setClustered(true))
                 .flatMap(vertx -> vertx.rxDeployVerticle(GatewayVerticle.class.getName()))
                 .subscribe(id -> logger.debug("GatewayVerticle deployed successfully"));
     }
 
     @Override
-    public void start(Future<Void> startFuture) throws Exception {
+    public void start(Future<Void> startFuture) {
         logger.debug("Starting GatewayVerticle");
         this.discovery = ServiceDiscovery.create(vertx);
         Router router = Router.router(vertx);

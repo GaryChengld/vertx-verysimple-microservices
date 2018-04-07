@@ -41,6 +41,8 @@
     <orderEntry type="library" name="Maven: io.vertx:vertx-web:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-auth-common:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-bridge-common:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-circuit-breaker:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-service-discovery:3.5.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-codegen:3.5.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mvel:mvel2:2.3.1.Final" level="project" />
