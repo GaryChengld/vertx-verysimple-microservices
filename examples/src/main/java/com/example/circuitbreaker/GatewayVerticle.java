@@ -49,7 +49,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
     private void requestHandler(RoutingContext context) {
         logger.debug("Received http request");
-        circuitBreaker.rxExecuteCommandWithFallback(future -> this.invokeService(future), this::fallbackHandler)
+        circuitBreaker.rxExecuteCommandWithFallback(this::invokeService, this::fallbackHandler)
                 .subscribe(json -> context.response()
                         .putHeader("content-type", "application/json")
                         .end(json.encodePrettily()));
@@ -59,13 +59,17 @@ public class GatewayVerticle extends AbstractVerticle {
         logger.debug("Sending request to service server");
         HttpClientRequest clientRequest = vertx.createHttpClient().get(8081, "localhost", "/");
         clientRequest.toFlowable()
-                .flatMap(res -> res.toFlowable()).subscribe(buffer -> future.complete(buffer.toJsonObject()), error -> future.fail(error.getMessage()));
+                .flatMap(res -> res.toFlowable()).subscribe(buffer -> future.complete(buffer.toJsonObject()), future::fail);
         clientRequest.end();
     }
 
     private JsonObject fallbackHandler(Throwable error) {
         logger.debug("Handle fallback");
-        logger.debug(error.getClass().getName());
+        Throwable rootCause = error;
+        while (null != rootCause.getCause()) {
+            rootCause = rootCause.getCause();
+        }
+        logger.debug(rootCause.getClass().getName());
         return new JsonObject().put("error", "Service is not available, reason:" + error.getMessage());
     }
 

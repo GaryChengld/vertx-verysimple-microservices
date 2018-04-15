@@ -17,6 +17,7 @@
 
   <modules>
     <module>examples</module>
+    <module>common</module>
   </modules>
   <build>
     <plugins>
@@ -84,7 +85,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
   </build>
 
   <dependencyManagement>
@@ -127,6 +127,10 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-service-discovery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-hazelcast</artifactId>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
