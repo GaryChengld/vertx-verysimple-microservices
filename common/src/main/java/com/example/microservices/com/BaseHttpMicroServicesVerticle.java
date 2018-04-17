@@ -1,11 +1,15 @@
 package com.example.microservices.com;
 
+import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.reactivex.core.http.HttpClient;
-import io.vertx.reactivex.core.http.HttpClientRequest;
+import io.vertx.reactivex.core.Future;
+import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.client.HttpRequest;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import io.vertx.reactivex.ext.web.handler.CorsHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,53 +44,41 @@ public abstract class BaseHttpMicroServicesVerticle extends BaseMicroServicesVer
         router.route().handler(corsHandler);
     }
 
-    /**
-     * Dispatch a http request to MicroServices http end point
-     *
-     * @param context
-     * @param serviceName
-     * @param errorHandler
-     */
-    protected void dispatchHttpRequest(RoutingContext context, String serviceName, Handler<? super Throwable> errorHandler) {
+    protected void dispatchRequest(RoutingContext context, String serviceName, Handler<? super Throwable> errorHandler) {
         logger.debug("Dispatch Http Request {} to service {}", context.request().uri(), serviceName);
-        this.getCircuitBreaker(serviceName).rxExecuteCommandWithFallback(
-                future -> this.getServiceHttpClient(serviceName)
-                        .subscribe(httpClient -> this.executeDispatchHttpRequest(context, httpClient, future),
-                                throwable -> future.fail("Service [" + serviceName + "] not published")),
-                throwable -> this.circuitFallback(errorHandler, throwable))
-                .subscribe(v -> logger.debug("dispatch request completed"));
+        this.getCircuitBreaker(serviceName).<Void>rxExecuteCommand(
+                future -> this.dispatchRequestHandler(context, serviceName, future))
+                .subscribe(v -> logger.debug("dispatch request completed"), errorHandler::handle);
     }
 
-    private Void circuitFallback(Handler<? super Throwable> errorHandler, Throwable throwable) {
-        errorHandler.handle(throwable);
-        return null;
+    protected void dispatchRequestHandler(RoutingContext context, String serviceName, Future<Void> future) {
+        this.getWebEndPoint(serviceName)
+                .subscribe(webClient -> invokeDispatchHttpRequest(context, webClient, future),
+                        throwable -> future.fail("Service [" + serviceName + "] not published"));
     }
 
-    private void executeDispatchHttpRequest(RoutingContext context, HttpClient httpClient, io.vertx.reactivex.core.Future<Void> future) {
-        logger.debug("executeDispatchHttpRequest, uri:{}", context.request().uri());
-        HttpClientRequest clientRequest = httpClient.request(context.request().method(), context.request().uri());
-        clientRequest.toFlowable()
-                .flatMap(response -> {
-                    if (!context.response().ended()) {
-                        context.response().setStatusCode(response.statusCode());
-                        response.headers().getDelegate().forEach(header -> context.response().putHeader(header.getKey(), header.getValue()));
-                    }
-                    return response.toFlowable();
-                })
-                .subscribe(buffer -> {
-                    if (!context.response().ended()) {
-                        context.response().end(buffer);
-                    }
-                    future.complete();
-                }, future::fail);
-        context.request().headers().getDelegate().forEach(header -> clientRequest.putHeader(header.getKey(), header.getValue()));
+    private void invokeDispatchHttpRequest(RoutingContext context, WebClient webClient, Future<Void> future) {
+        logger.debug("invokeDispatchHttpRequest, uri:{}", context.request().uri());
+        HttpRequest<Buffer> httpRequest = webClient.request(context.request().method(), context.request().uri());
+        context.request().headers().getDelegate().forEach(header -> httpRequest.putHeader(header.getKey(), header.getValue()));
         if (context.user() != null) {
-            clientRequest.putHeader("user-principal", context.user().principal().encode());
+            httpRequest.putHeader("user-principal", context.user().principal().encode());
         }
-        if (null != context.getBody()) {
-            clientRequest.end(context.getBody());
+        Single<HttpResponse<Buffer>> result;
+        if (null != context.request().formAttributes() && !context.request().formAttributes().isEmpty()) {
+            result = httpRequest.rxSendForm(context.request().formAttributes());
+        } else if (null != context.getBody()) {
+            result = httpRequest.rxSendBuffer(context.getBody());
         } else {
-            clientRequest.end();
+            result = httpRequest.rxSend();
         }
+        result.subscribe(response -> {
+            if (!context.response().ended()) {
+                context.response().setStatusCode(response.statusCode());
+                response.headers().getDelegate().forEach(header -> context.response().putHeader(header.getKey(), header.getValue()));
+                context.response().end(response.body());
+            }
+            future.complete();
+        }, future::fail);
     }
 }

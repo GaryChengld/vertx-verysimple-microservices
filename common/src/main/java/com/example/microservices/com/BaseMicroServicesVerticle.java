@@ -1,13 +1,16 @@
 package com.example.microservices.com;
 
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
-import io.vertx.core.impl.ConcurrentHashSet;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.circuitbreaker.CircuitBreaker;
 import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.core.buffer.Buffer;
 import io.vertx.reactivex.core.http.HttpClient;
+import io.vertx.reactivex.ext.web.client.HttpRequest;
+import io.vertx.reactivex.ext.web.client.HttpResponse;
+import io.vertx.reactivex.ext.web.client.WebClient;
 import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
 import io.vertx.reactivex.servicediscovery.types.HttpEndpoint;
 import io.vertx.servicediscovery.Record;
@@ -15,9 +18,6 @@ import io.vertx.servicediscovery.ServiceDiscoveryOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,18 +27,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Gary Cheng
  */
 public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
-    public static final String KEY_SERVICE_NAME = "service.name";
-    public static final String KEY_HOST = "host";
-    public static final String KEY_PORT = "port";
-    public static final String KEY_ROOT = "root";
-    private static final String KEY_NAME = "name";
+    protected static final String KEY_SERVICE_NAME = "service.name";
+    protected static final String KEY_HOST = "host";
+    protected static final String KEY_PORT = "port";
+    protected static final String KEY_ROOT = "root";
+    protected static final String KEY_NAME = "name";
 
     private static final Logger logger = LoggerFactory.getLogger(BaseMicroServicesVerticle.class);
 
     protected ServiceDiscovery discovery;
-    private Collection<Record> publishedRecords = new ConcurrentHashSet<>();
+    private Record publishedRecord;
     private Map<String, CircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<>();
-    private Map<String, Object> serviceClientMap = new ConcurrentHashMap<>();
+    private Map<String, Object> serviceEndPointMap = new ConcurrentHashMap<>();
 
     @Override
     public void start() {
@@ -50,15 +50,11 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
     @Override
     public void stop() {
         logger.debug("Stopping verticle - {}", this.getClass().getName());
-        if (null != discovery) {
-            List<Completable> completables = new ArrayList<>();
-            publishedRecords.forEach(record -> completables.add(discovery.rxUnpublish(record.getRegistration())));
-            Completable.merge(completables)
-                    .subscribe(() -> {
-                        logger.debug("All services have been un-published");
-                        discovery.close();
-                    });
-        }
+        this.serviceEndPointMap.keySet().stream().forEach(serviceName -> this.closeCachedEndPoint(serviceName));
+        this.serviceEndPointMap.clear();
+        this.circuitBreakerMap.values().stream().forEach(circuitBreaker -> circuitBreaker.close());
+        this.circuitBreakerMap.clear();
+        this.unpublishRecord().subscribe(b -> discovery.close());
     }
 
     /**
@@ -77,6 +73,7 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      * @return circuit breaker of service
      */
     protected final CircuitBreaker getCircuitBreaker(String serviceName) {
+        logger.debug("Get CircuitBreaker of service {}", serviceName);
         CircuitBreaker circuitBreaker = circuitBreakerMap.get(serviceName);
         if (null == circuitBreaker) {
             circuitBreaker = this.createCircuitBreaker(serviceName);
@@ -92,7 +89,7 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      * @return circuit breaker of service
      */
     protected CircuitBreaker createCircuitBreaker(String serviceName) {
-        logger.debug("create circuit breaker for service {}", serviceName);
+        logger.debug("Create CircuitBreaker for service {}", serviceName);
         String circuitBreakerName = serviceName + "-" + "circuit-breaker";
         CircuitBreakerOptions options = new CircuitBreakerOptions()
                 .setMaxFailures(5)
@@ -100,25 +97,46 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
                 .setResetTimeout(10000)
                 .setFallbackOnFailure(true);
         return CircuitBreaker.create(circuitBreakerName, vertx, options)
-                .openHandler(v -> logger.debug("{} opened", circuitBreakerName))
+                .openHandler(v -> {
+                    logger.debug("{} opened", circuitBreakerName);
+                    this.closeCachedEndPoint(serviceName);
+                })
                 .halfOpenHandler(v -> logger.debug("{} half opened", circuitBreakerName))
                 .closeHandler(v -> logger.debug("{} closed", circuitBreakerName));
     }
 
     /**
-     * Lookup ServiceDiscovery by service name and return an async HttpClient
+     * Return an async HttpClient by service name
      *
      * @param serviceName the name of service
      * @return
      */
-    protected final Single<HttpClient> getServiceHttpClient(String serviceName) {
+    protected final Single<HttpClient> getHttpEndPoint(String serviceName) {
         logger.debug("Get HTTP client by service name[{}]", serviceName);
-        Object serviceClient = this.serviceClientMap.get(serviceName);
-        if (null != serviceClient) {
-            return Single.just((HttpClient) serviceClient);
+        Object endPoint = this.serviceEndPointMap.get(serviceName);
+        if (null != endPoint && endPoint instanceof HttpClient) {
+            return Single.just((HttpClient) endPoint);
         } else {
             return HttpEndpoint.rxGetClient(discovery, new JsonObject().put(KEY_NAME, serviceName))
-                    .doOnSuccess(httpClient -> this.serviceClientMap.put(serviceName, httpClient));
+                    .doOnSuccess(httpClient -> this.serviceEndPointMap.put(serviceName, httpClient));
+        }
+    }
+
+    /**
+     * Return an async HttpClient by service name
+     *
+     * @param serviceName the name of service
+     * @return
+     */
+    protected final Single<WebClient> getWebEndPoint(String serviceName) {
+        logger.debug("Get Web client by service name[{}]", serviceName);
+        Object endPoint = this.serviceEndPointMap.get(serviceName);
+        if (null != endPoint && endPoint instanceof WebClient) {
+            return Single.just((WebClient) endPoint);
+        } else {
+            logger.debug("Getting Web client from ServiceDiscovery...");
+            return HttpEndpoint.rxGetWebClient(discovery, new JsonObject().put(KEY_NAME, serviceName))
+                    .doOnSuccess(webClient -> this.serviceEndPointMap.put(serviceName, webClient));
         }
     }
 
@@ -142,12 +160,84 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      * @param record record to publish
      * @return
      */
-    private Single<Record> publishRecord(Record record) {
-        return discovery.rxPublish(record)
-                .flatMap(r -> {
-                    logger.debug("Service {} has been published", record.getName());
-                    this.publishedRecords.add(r);
-                    return Single.just(r);
-                });
+    protected Single<Record> publishRecord(Record record) {
+        return this.unpublishRecord()
+                .flatMap(b -> discovery.rxPublish(record))
+                .doOnSuccess(r -> this.publishedRecord = r);
+    }
+
+    /**
+     * Invoke a restful service by service name
+     *
+     * @param serviceName the name of service
+     * @param method      HTTP method
+     * @param uri         uri of request
+     * @param body        body of request
+     * @return result as JsonObject
+     */
+    protected Single<JsonObject> invokeRestfulService(String serviceName, HttpMethod method, String uri, JsonObject body) {
+        logger.debug("invokeRestfulService, service name:{}, uri:{}", serviceName, uri);
+        return this.getCircuitBreaker(serviceName).rxExecuteCommand(future ->
+                this.getWebEndPoint(serviceName).subscribe(webClient -> {
+                    HttpRequest request = webClient.request(method, uri);
+                    Single<HttpResponse<Buffer>> result;
+                    if (null == body) {
+                        result = request.rxSend();
+                    } else {
+                        result = request.rxSendJsonObject(body);
+                    }
+                    result.map(HttpResponse::bodyAsJsonObject).subscribe(future::complete, future::fail);
+                }, throwable -> future.fail("Service [" + serviceName + "] not found"))
+        );
+    }
+
+    /**
+     * Invoke a restful service by given host and port
+     *
+     * @param method HTTP method
+     * @param port   port of EndPoint
+     * @param host   host of EndPoint
+     * @param uri    uri of request
+     * @param body   body of request
+     * @return
+     */
+    protected Single<JsonObject> invokeRestful(HttpMethod method, int port, String host, String uri, JsonObject body) {
+        logger.debug("invokeRestfulService, host:{}, port:{}, uri:{}", host, port, uri);
+        HttpRequest<Buffer> request = WebClient.create(vertx).request(method, port, host, uri);
+        Single<HttpResponse<Buffer>> result;
+        if (null == body) {
+            result = request.rxSend();
+        } else {
+            result = request.rxSendJsonObject(body);
+        }
+        return result.map(HttpResponse::bodyAsJsonObject);
+    }
+
+    private Single<Boolean> unpublishRecord() {
+        return Single.create(emitter -> {
+            if (null != this.publishedRecord) {
+                discovery.rxUnpublish(this.publishedRecord.getRegistration())
+                        .subscribe(() -> {
+                            logger.debug("Service {} unpublished", this.publishedRecord.getName());
+                            this.publishedRecord = null;
+                            emitter.onSuccess(true);
+                        }, emitter::onError);
+            } else {
+                emitter.onSuccess(true);
+            }
+        });
+    }
+
+    private void closeCachedEndPoint(String serviceName) {
+        Object endPoint = this.serviceEndPointMap.get(serviceName);
+        if (null != endPoint) {
+            logger.debug("Close cached EndPoint for service {}", serviceName);
+            if (endPoint instanceof WebClient) {
+                ((WebClient) endPoint).close();
+            } else if (endPoint instanceof HttpClient) {
+                ((HttpClient) endPoint).close();
+            }
+            this.serviceEndPointMap.remove(serviceName);
+        }
     }
 }
