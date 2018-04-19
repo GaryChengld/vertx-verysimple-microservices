@@ -1,4 +1,4 @@
-package com.example.microservices.com;
+package com.ezshop.common;
 
 import io.reactivex.Single;
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
@@ -177,8 +177,8 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      */
     protected Single<JsonObject> invokeRestfulService(String serviceName, HttpMethod method, String uri, JsonObject body) {
         logger.debug("invokeRestfulService, service name:{}, uri:{}", serviceName, uri);
-        return this.getCircuitBreaker(serviceName).rxExecuteCommand(future ->
-                this.getWebEndPoint(serviceName).subscribe(webClient -> {
+        return this.getCircuitBreaker(serviceName).rxExecuteCommand(future -> this.getWebEndPoint(serviceName).subscribe(
+                webClient -> {
                     HttpRequest request = webClient.request(method, uri);
                     Single<HttpResponse<Buffer>> result;
                     if (null == body) {
@@ -187,7 +187,8 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
                         result = request.rxSendJsonObject(body);
                     }
                     result.map(HttpResponse::bodyAsJsonObject).subscribe(future::complete, future::fail);
-                }, throwable -> future.fail("Service [" + serviceName + "] not found"))
+                },
+                throwable -> future.fail("Service [" + serviceName + "] not found"))
         );
     }
 

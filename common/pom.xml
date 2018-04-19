@@ -5,19 +5,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.example</groupId>
-    <artifactId>microservices</artifactId>
+    <groupId>vertx.microservice.ezshop</groupId>
+    <artifactId>vertx-ezshop</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>microservices-common</artifactId>
-  
+  <artifactId>ezshop-common</artifactId>
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
-      <artifactId>vertx-hazelcast</artifactId>
+      <artifactId>vertx-web-client</artifactId>
     </dependency>
-
   </dependencies>
 
 </project>

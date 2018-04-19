@@ -1,4 +1,4 @@
-package com.example.microservices.com;
+package com.ezshop.common;
 
 import io.reactivex.Single;
 import io.vertx.core.Handler;

@@ -10,8 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-hazelcast:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: com.hazelcast:hazelcast:3.8.2" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-web-client:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-web-common:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-core:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.19.Final" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.19.Final" level="project" />
@@ -28,22 +28,17 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-jdbc-client:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-sql-common:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.2" level="project" />
-    <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.11" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-service-proxy:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-rx-java2:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.1.9" level="project" />
-    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-web:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-auth-common:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-bridge-common:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-web-client:3.5.1" level="project" />
-    <orderEntry type="library" name="Maven: io.vertx:vertx-web-common:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-rx-java2:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.reactivex.rxjava2:rxjava:2.1.9" level="project" />
+    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-circuit-breaker:3.5.1" level="project" />
     <orderEntry type="library" name="Maven: org.hdrhistogram:HdrHistogram:2.1.9" level="project" />
     <orderEntry type="library" name="Maven: io.vertx:vertx-service-discovery:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: io.vertx:vertx-hazelcast:3.5.1" level="project" />
+    <orderEntry type="library" name="Maven: com.hazelcast:hazelcast:3.8.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: io.vertx:vertx-codegen:3.5.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.mvel:mvel2:2.3.1.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: io.vertx:vertx-unit:3.5.1" level="project" />
