@@ -1,0 +1,14 @@
+{
+  "httpServer": {
+    "port": 8081,
+    "host": "localhost"
+  },
+  "database": {
+    "url": "jdbc:hsqldb:file:db/product-db;shutdown=true",
+    "driver_class": "org.hsqldb.jdbcDriver",
+    "max_pool_size": 10
+  },
+  "liquibase": {
+    "change_log": "META-INF/liquibase/product.changelogs.yaml"
+  }
+}

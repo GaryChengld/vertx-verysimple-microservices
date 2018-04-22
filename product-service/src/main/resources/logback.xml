@@ -8,7 +8,11 @@
 
   <logger name="io.netty" level="warn"/>
   <logger name="io.vertx" level="info"/>
-  <logger name="com.hazelcast" level="info"/>
+  <logger name="com.hazelcast" level="warn"/>
+  <logger name="liquibase" level="warn"/>
+  <logger name="com.mchange.v2" level="warn"/>
+  <logger name="ch.qos.logback" level="warn"/>
+
   <logger name="com.ezshop" level="debug"/>
 
   <root level="debug">

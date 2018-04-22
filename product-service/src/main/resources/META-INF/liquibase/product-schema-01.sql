@@ -1,0 +1,23 @@
+--liquibase formatted sql logicalFilePath:product-schema-01.sql
+
+--changeset GC:1
+CREATE TABLE CATEGORY (
+    CATEGORY_ID         INTEGER IDENTITY PRIMARY KEY,
+    CATEGORY_NAME       VARCHAR(255) NOT NULL,
+    DESCRIPTION         VARCHAR(2000) NOT NULL
+);
+--rollback drop table CATEGORY;
+
+--changeset GC:2
+CREATE TABLE PRODUCT (
+    PRODUCT_ID          INTEGER IDENTITY PRIMARY KEY,
+    PRODUCT_CODE        VARCHAR(32) NOT NULL UNIQUE,
+    PRODUCT_NAME        VARCHAR(255) NOT NULL,
+    DESCRIPTION         VARCHAR(2000) NOT NULL,
+    MANUFACTURER        VARCHAR(64),
+    MODEL               VARCHAR(255),
+    PRICE               DECIMAL(10, 2),
+    CATEGORY_ID         INTEGER,
+    FOREIGN KEY (CATEGORY_ID) REFERENCES CATEGORY(CATEGORY_ID)
+);
+--rollback drop table PRODUCT;

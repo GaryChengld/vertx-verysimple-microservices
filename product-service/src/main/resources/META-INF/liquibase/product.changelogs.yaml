@@ -1,0 +1,8 @@
+databaseChangeLog:
+
+ - include:
+    file: product-schema-01.sql
+    relativeToChangelogFile: true
+ - include:
+    file: product-data-01.sql
+    relativeToChangelogFile: true
