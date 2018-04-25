@@ -1,7 +1,8 @@
 {
   "httpServer": {
     "port": 8081,
-    "host": "localhost"
+    "host": "localhost",
+    "root": "/"
   },
   "database": {
     "url": "jdbc:hsqldb:file:db/product-db;shutdown=true",
@@ -10,5 +11,7 @@
   },
   "liquibase": {
     "change_log": "META-INF/liquibase/product.changelogs.yaml"
-  }
+  },
+  "serviceName": "product",
+  "serviceProxyAddress": "db.queue.product"
 }

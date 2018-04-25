@@ -1,12 +1,8 @@
 package com.ezshop.gateway;
 
-
 import com.ezshop.common.BaseHttpMicroServicesVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.RxHelper;
-import io.vertx.reactivex.core.http.HttpServer;
-import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import io.vertx.reactivex.ext.web.handler.BodyHandler;
@@ -15,6 +11,9 @@ import io.vertx.servicediscovery.rest.ServiceDiscoveryRestEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.ezshop.common.ErrorCodes.SYSTEM_ERROR_CODE;
+import static com.ezshop.common.HttpResponseCodes.SC_BAD_REQUEST;
+
 /**
  * The verticle for application gateway
  *
@@ -22,71 +21,46 @@ import org.slf4j.LoggerFactory;
  */
 public class ApiGatewayVerticle extends BaseHttpMicroServicesVerticle {
     private static final Logger logger = LoggerFactory.getLogger(ApiGatewayVerticle.class);
-    private static final String PREFIX_SERVICE = "/api/";
+    private static final String PREFIX_API = "/api/";
     private static final String KEY_HTTP_SERVER = "httpServer";
-    private static final String KEY_PORT = "port";
+
+    private static final String ERROR_EMPTY_SERVICE_NAME = "Empty service name";
 
     @Override
     public void start(Future<Void> startFuture) {
         super.start();
         JsonObject httpConfig = this.config().getJsonObject(KEY_HTTP_SERVER);
-        int port = httpConfig.getInteger(KEY_PORT);
         Router router = Router.router(vertx);
         this.enableCorsSupport(router);
         ServiceDiscoveryRestEndpoint.create(router.getDelegate(), discovery.getDelegate());
         this.configureRouter(router);
-        HttpServer server = vertx.createHttpServer();
-        server.requestStream()
-                .toFlowable()
-                .map(HttpServerRequest::pause)
-                .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
-                .observeOn(RxHelper.scheduler(vertx.getDelegate()))
-                .subscribe(req -> {
-                    req.resume();
-                    router.accept(req);
-                });
-        server.rxListen(port).subscribe(s -> {
-            logger.debug("Gateway HTTP server started on port {}", port);
-            startFuture.complete();
-        }, startFuture::fail);
+        this.createHttpServer(httpConfig, router)
+                .subscribe(s -> startFuture.complete(), startFuture::fail);
     }
 
     private void configureRouter(Router router) {
         router.route().handler(BodyHandler.create());
-        router.route(PREFIX_SERVICE + "*").handler(this::serviceHandler);
+        router.route(PREFIX_API + "*").handler(this::apiHandler);
         router.route("/*").handler(StaticHandler.create());
-        //String regexMatcher = "^(?!" + PREFIX_SERVICE + ").*";
-        //router.routeWithRegex(regexMatcher).handler(this::indexHandler);
-        //router.route("/").handler(this::indexHandler);
     }
 
-    private void indexHandler(RoutingContext context) {
-        logger.debug("Received http request");
-        context.response()
-                .putHeader("content-type", "application/json")
-                .end(new JsonObject().put("message", "Welcome to ezShop").encodePrettily());
-    }
-
-    private void serviceHandler(RoutingContext context) {
+    private void apiHandler(RoutingContext context) {
         String path = context.request().uri();
         logger.debug("service path:{}", path);
-        String serviceName = path.substring(PREFIX_SERVICE.length()).split("/")[0];
+        String serviceName = null;
+        if (path.length() >= PREFIX_API.length()) {
+            serviceName = path.substring(PREFIX_API.length()).split("/")[0];
+        }
         logger.debug("Service Name:{}", serviceName);
         if (null == serviceName || serviceName.trim().equalsIgnoreCase("")) {
-            this.error(context, 500, "Empty service name");
+            this.restErrorHandler(context, SC_BAD_REQUEST, SYSTEM_ERROR_CODE, ERROR_EMPTY_SERVICE_NAME);
         } else {
-            this.dispatchRequest(context, serviceName, error -> this.error(context, error));
-        }
-    }
-
-    private void error(RoutingContext context, Throwable throwable) {
-        this.error(context, 500, throwable.getMessage());
-    }
-
-    private void error(RoutingContext context, int statusCode, String errorMessage) {
-        if (!context.response().ended()) {
-            context.response().setStatusCode(statusCode).putHeader("content-type", "application/json")
-                    .end(new JsonObject().put("statusCode", statusCode).put("error", errorMessage).encodePrettily());
+            String serviceUri = path.substring(PREFIX_API.length() + serviceName.length());
+            if (serviceUri.trim().length() == 0) {
+                serviceUri = "/";
+            }
+            logger.debug("Service uri:{}", serviceUri);
+            this.dispatchRequest(context, serviceName, serviceUri, error -> this.restErrorHandler(context, error));
         }
     }
 }

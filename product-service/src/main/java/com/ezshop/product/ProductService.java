@@ -24,11 +24,24 @@ public interface ProductService {
         return new ProductServiceImpl(jdbc);
     }
 
+    /**
+     * Create service proxy by given proxy address on event bus
+     *
+     * @param vertx
+     * @param address the address of proxy on event bus
+     * @return
+     */
     @GenIgnore
     static com.ezshop.product.reactivex.ProductService createProxy(Vertx vertx, String address) {
         return new com.ezshop.product.reactivex.ProductService(new ProductServiceVertxEBProxy(vertx.getDelegate(), address));
     }
 
+    /**
+     * Return all categories
+     *
+     * @param resultHandler the handler to process async result
+     * @return
+     */
     @Fluent
     ProductService getAllCategories(Handler<AsyncResult<JsonArray>> resultHandler);
 }

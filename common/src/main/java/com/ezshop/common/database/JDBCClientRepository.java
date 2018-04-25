@@ -32,17 +32,14 @@ public class JDBCClientRepository {
      * Execute a single SQL statement without parameter
      *
      * @param sql
-     * @param mapper
-     * @param <R>
+     * @param mapper map a jonObject row to target type
      * @return
      */
     public <R> Single<List<R>> query(String sql, Function<JsonObject, ? extends R> mapper) {
         return jdbcClient.rxGetConnection().flatMap(
                 conn -> jdbcClient.rxQuery(sql)
                         .doAfterTerminate(conn::close)
-                        .map(resultSet -> resultSet.getRows().stream()
-                                .map(mapper::apply)
-                                .collect(Collectors.toList()))
+                        .map(resultSet -> resultSet.getRows().stream().map(mapper::apply).collect(Collectors.toList()))
         );
     }
 }

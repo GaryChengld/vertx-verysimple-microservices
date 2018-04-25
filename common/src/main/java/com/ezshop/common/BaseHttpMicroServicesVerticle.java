@@ -3,8 +3,12 @@ package com.ezshop.common;
 import io.reactivex.Single;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.json.JsonObject;
+import io.vertx.reactivex.RxHelper;
 import io.vertx.reactivex.core.Future;
 import io.vertx.reactivex.core.buffer.Buffer;
+import io.vertx.reactivex.core.http.HttpServer;
+import io.vertx.reactivex.core.http.HttpServerRequest;
 import io.vertx.reactivex.ext.web.Router;
 import io.vertx.reactivex.ext.web.RoutingContext;
 import io.vertx.reactivex.ext.web.client.HttpRequest;
@@ -18,6 +22,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.ezshop.common.ConfigKeys.KEY_PORT;
+import static com.ezshop.common.ErrorCodes.SYSTEM_ERROR_CODE;
+import static com.ezshop.common.HttpResponseCodes.SC_INTERNAL_SERVER_ERROR;
+import static com.ezshop.common.HttpResponseCodes.SC_OK;
+
 /**
  * The abstract verticle which work as HTTP server
  *
@@ -25,6 +34,31 @@ import java.util.Set;
  */
 public abstract class BaseHttpMicroServicesVerticle extends BaseMicroServicesVerticle {
     private static final Logger logger = LoggerFactory.getLogger(BaseMicroServicesVerticle.class);
+    private static final String KEY_ERROR = "error";
+    private static final String KEY_ERROR_CODE = "errorCode";
+    private static final String KEY_ERROR_MESSAGE = "errorMessage";
+
+    /**
+     * Create a HTTP server by given config and router
+     *
+     * @param config HTTP config
+     * @param router the router receives HTTP request
+     * @return
+     */
+    protected Single<HttpServer> createHttpServer(JsonObject config, Router router) {
+        int port = config.getInteger(KEY_PORT);
+        HttpServer server = vertx.createHttpServer();
+        server.requestStream()
+                .toFlowable()
+                .map(HttpServerRequest::pause)
+                .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
+                .observeOn(RxHelper.scheduler(vertx.getDelegate()))
+                .subscribe(req -> {
+                    req.resume();
+                    router.accept(req);
+                });
+        return server.rxListen(port).doAfterSuccess(s -> logger.debug("http server started on port {}", port));
+    }
 
     /**
      * Enable CORS
@@ -44,22 +78,69 @@ public abstract class BaseHttpMicroServicesVerticle extends BaseMicroServicesVer
         router.route().handler(corsHandler);
     }
 
-    protected void dispatchRequest(RoutingContext context, String serviceName, Handler<? super Throwable> errorHandler) {
-        logger.debug("Dispatch Http Request {} to service {}", context.request().uri(), serviceName);
+    /**
+     * Write generic json object to HTTP response
+     *
+     * @param context
+     * @param jsonString the json context to be wrote to HTTP response
+     */
+    protected void restResponseHandler(RoutingContext context, String jsonString) {
+        if (!context.response().ended()) {
+            context.response().setStatusCode(SC_OK).putHeader("content-type", "application/json")
+                    .end(jsonString);
+        }
+    }
+
+    /**
+     * Generate Rest error response by given exception
+     *
+     * @param context
+     * @param throwable
+     */
+    protected void restErrorHandler(RoutingContext context, Throwable throwable) {
+        this.restErrorHandler(context, SC_INTERNAL_SERVER_ERROR, SYSTEM_ERROR_CODE, throwable.getMessage());
+    }
+
+    /**
+     * Generate Rest error response by given statusCode, errorCode and error message
+     *
+     * @param context
+     * @param statusCode   the HTTP response status code
+     * @param errorCode    the error code
+     * @param errorMessage the error message
+     */
+    protected void restErrorHandler(RoutingContext context, int statusCode, String errorCode, String errorMessage) {
+        if (!context.response().ended()) {
+            JsonObject json = new JsonObject().put(KEY_ERROR, new JsonObject().put(KEY_ERROR_CODE, errorCode).put(KEY_ERROR_MESSAGE, errorMessage));
+            context.response().setStatusCode(statusCode).putHeader("content-type", "application/json")
+                    .end(json.encodePrettily());
+        }
+    }
+
+    /**
+     * Dispatch a HTTP request to a HttpEndPoint service
+     *
+     * @param context      Routing context
+     * @param serviceName  the name of service
+     * @param uri          the uri at HttpEndPoint service
+     * @param errorHandler the async error handler
+     */
+    protected void dispatchRequest(RoutingContext context, String serviceName, String uri, Handler<? super Throwable> errorHandler) {
+        logger.debug("Dispatch Http Request {} to {} service", uri, serviceName);
         this.getCircuitBreaker(serviceName).<Void>rxExecuteCommand(
-                future -> this.dispatchRequestHandler(context, serviceName, future))
+                future -> this.dispatchRequestHandler(context, serviceName, uri, future))
                 .subscribe(v -> logger.debug("dispatch request completed"), errorHandler::handle);
     }
 
-    protected void dispatchRequestHandler(RoutingContext context, String serviceName, Future<Void> future) {
+    private void dispatchRequestHandler(RoutingContext context, String serviceName, String uri, Future<Void> future) {
         this.getWebEndPoint(serviceName)
-                .subscribe(webClient -> invokeDispatchHttpRequest(context, webClient, future),
+                .subscribe(webClient -> invokeDispatchHttpRequest(context, webClient, uri, future),
                         throwable -> future.fail("Service [" + serviceName + "] not published"));
     }
 
-    private void invokeDispatchHttpRequest(RoutingContext context, WebClient webClient, Future<Void> future) {
-        logger.debug("invokeDispatchHttpRequest, uri:{}", context.request().uri());
-        HttpRequest<Buffer> httpRequest = webClient.request(context.request().method(), context.request().uri());
+    private void invokeDispatchHttpRequest(RoutingContext context, WebClient webClient, String uri, Future<Void> future) {
+        logger.debug("invokeDispatchHttpRequest, uri:{}", uri);
+        HttpRequest<Buffer> httpRequest = webClient.request(context.request().method(), uri);
         context.request().headers().getDelegate().forEach(header -> httpRequest.putHeader(header.getKey(), header.getValue()));
         if (context.user() != null) {
             httpRequest.putHeader("user-principal", context.user().principal().encode());

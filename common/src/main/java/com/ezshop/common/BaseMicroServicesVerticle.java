@@ -21,16 +21,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.ezshop.common.ConfigKeys.*;
+
 /**
  * The base verticle class which provided some common functions include service discovery
  *
  * @author Gary Cheng
  */
 public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
-    protected static final String KEY_SERVICE_NAME = "service.name";
-    protected static final String KEY_HOST = "host";
-    protected static final String KEY_PORT = "port";
-    protected static final String KEY_ROOT = "root";
     protected static final String KEY_NAME = "name";
 
     private static final Logger logger = LoggerFactory.getLogger(BaseMicroServicesVerticle.class);
@@ -143,14 +141,15 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
     /**
      * Publish a HttpEndPoint service to ServiceDiscovery
      *
-     * @param config the configure of HttpEndPoint
+     * @param serviceName the name of service to be published
+     * @param config      the configure of HttpEndPoint
      * @return
      */
-    protected final Single<Record> publishHttpEndPoint(JsonObject config) {
-        String serviceName = config.getString(KEY_SERVICE_NAME);
+    protected final Single<Record> publishHttpEndPoint(String serviceName, JsonObject config) {
         String host = config.getString(KEY_HOST, "localhost");
         Integer port = config.getInteger(KEY_PORT, 8080);
         String root = config.getString(KEY_ROOT, "/");
+        logger.debug("publishHttpEndPoint service:{}, host:{}, port:{}, root:{}", serviceName, host, port, root);
         return this.publishRecord(HttpEndpoint.createRecord(serviceName, host, port, root));
     }
 
