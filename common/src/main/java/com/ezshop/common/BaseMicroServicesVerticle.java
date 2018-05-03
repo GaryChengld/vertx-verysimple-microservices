@@ -36,7 +36,6 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
     protected ServiceDiscovery discovery;
     private Record publishedRecord;
     private Map<String, CircuitBreaker> circuitBreakerMap = new ConcurrentHashMap<>();
-    private Map<String, Object> serviceEndPointMap = new ConcurrentHashMap<>();
 
     @Override
     public void start() {
@@ -48,11 +47,9 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
     @Override
     public void stop() {
         logger.debug("Stopping verticle - {}", this.getClass().getName());
-        this.serviceEndPointMap.keySet().stream().forEach(serviceName -> this.closeCachedEndPoint(serviceName));
-        this.serviceEndPointMap.clear();
         this.circuitBreakerMap.values().stream().forEach(circuitBreaker -> circuitBreaker.close());
         this.circuitBreakerMap.clear();
-        this.unpublishRecord().subscribe(b -> discovery.close());
+        this.unpublishRecord().subscribe(b -> discovery.close(), error -> logger.debug(error.getMessage()));
     }
 
     /**
@@ -95,10 +92,7 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
                 .setResetTimeout(10000)
                 .setFallbackOnFailure(true);
         return CircuitBreaker.create(circuitBreakerName, vertx, options)
-                .openHandler(v -> {
-                    logger.debug("{} opened", circuitBreakerName);
-                    this.closeCachedEndPoint(serviceName);
-                })
+                .openHandler(v -> logger.debug("{} opened", circuitBreakerName))
                 .halfOpenHandler(v -> logger.debug("{} half opened", circuitBreakerName))
                 .closeHandler(v -> logger.debug("{} closed", circuitBreakerName));
     }
@@ -111,13 +105,7 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      */
     protected final Single<HttpClient> getHttpEndPoint(String serviceName) {
         logger.debug("Get HTTP client by service name[{}]", serviceName);
-        Object endPoint = this.serviceEndPointMap.get(serviceName);
-        if (null != endPoint && endPoint instanceof HttpClient) {
-            return Single.just((HttpClient) endPoint);
-        } else {
-            return HttpEndpoint.rxGetClient(discovery, new JsonObject().put(KEY_NAME, serviceName))
-                    .doOnSuccess(httpClient -> this.serviceEndPointMap.put(serviceName, httpClient));
-        }
+        return HttpEndpoint.rxGetClient(discovery, new JsonObject().put(KEY_NAME, serviceName));
     }
 
     /**
@@ -128,14 +116,8 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      */
     protected final Single<WebClient> getWebEndPoint(String serviceName) {
         logger.debug("Get Web client by service name[{}]", serviceName);
-        Object endPoint = this.serviceEndPointMap.get(serviceName);
-        if (null != endPoint && endPoint instanceof WebClient) {
-            return Single.just((WebClient) endPoint);
-        } else {
-            logger.debug("Getting Web client from ServiceDiscovery...");
-            return HttpEndpoint.rxGetWebClient(discovery, new JsonObject().put(KEY_NAME, serviceName))
-                    .doOnSuccess(webClient -> this.serviceEndPointMap.put(serviceName, webClient));
-        }
+        return HttpEndpoint.rxGetWebClient(discovery, new JsonObject().put(KEY_NAME, serviceName));
+
     }
 
     /**
@@ -174,11 +156,11 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      * @param body        body of request
      * @return result as JsonObject
      */
-    protected Single<JsonObject> invokeRestfulService(String serviceName, HttpMethod method, String uri, JsonObject body) {
+    protected Single<JsonObject> invokeRestService(String serviceName, HttpMethod method, String uri, JsonObject body) {
         logger.debug("invokeRestfulService, service name:{}, uri:{}", serviceName, uri);
         return this.getCircuitBreaker(serviceName).rxExecuteCommand(future -> this.getWebEndPoint(serviceName).subscribe(
                 webClient -> {
-                    HttpRequest request = webClient.request(method, uri);
+                    HttpRequest<Buffer> request = webClient.request(method, uri);
                     Single<HttpResponse<Buffer>> result;
                     if (null == body) {
                         result = request.rxSend();
@@ -201,7 +183,7 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
      * @param body   body of request
      * @return
      */
-    protected Single<JsonObject> invokeRestful(HttpMethod method, int port, String host, String uri, JsonObject body) {
+    protected Single<JsonObject> invokeRestRequest(HttpMethod method, int port, String host, String uri, JsonObject body) {
         logger.debug("invokeRestfulService, host:{}, port:{}, uri:{}", host, port, uri);
         HttpRequest<Buffer> request = WebClient.create(vertx).request(method, port, host, uri);
         Single<HttpResponse<Buffer>> result;
@@ -226,18 +208,5 @@ public abstract class BaseMicroServicesVerticle extends AbstractVerticle {
                 emitter.onSuccess(true);
             }
         });
-    }
-
-    private void closeCachedEndPoint(String serviceName) {
-        Object endPoint = this.serviceEndPointMap.get(serviceName);
-        if (null != endPoint) {
-            logger.debug("Close cached EndPoint for service {}", serviceName);
-            if (endPoint instanceof WebClient) {
-                ((WebClient) endPoint).close();
-            } else if (endPoint instanceof HttpClient) {
-                ((HttpClient) endPoint).close();
-            }
-            this.serviceEndPointMap.remove(serviceName);
-        }
     }
 }

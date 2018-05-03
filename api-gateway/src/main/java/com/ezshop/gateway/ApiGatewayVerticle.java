@@ -1,6 +1,7 @@
 package com.ezshop.gateway;
 
 import com.ezshop.common.BaseHttpMicroServicesVerticle;
+import com.ezshop.common.ConfigKeys;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.ext.web.Router;
@@ -11,6 +12,7 @@ import io.vertx.servicediscovery.rest.ServiceDiscoveryRestEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.ezshop.common.ConfigKeys.KEY_HTTP_SERVER;
 import static com.ezshop.common.ErrorCodes.SYSTEM_ERROR_CODE;
 import static com.ezshop.common.HttpResponseCodes.SC_BAD_REQUEST;
 
@@ -22,7 +24,8 @@ import static com.ezshop.common.HttpResponseCodes.SC_BAD_REQUEST;
 public class ApiGatewayVerticle extends BaseHttpMicroServicesVerticle {
     private static final Logger logger = LoggerFactory.getLogger(ApiGatewayVerticle.class);
     private static final String PREFIX_API = "/api/";
-    private static final String KEY_HTTP_SERVER = "httpServer";
+    private static final String URI_API = "/api/*";
+    private static final String URI_STATIC = "/*";
 
     private static final String ERROR_EMPTY_SERVICE_NAME = "Empty service name";
 
@@ -40,8 +43,8 @@ public class ApiGatewayVerticle extends BaseHttpMicroServicesVerticle {
 
     private void configureRouter(Router router) {
         router.route().handler(BodyHandler.create());
-        router.route(PREFIX_API + "*").handler(this::apiHandler);
-        router.route("/*").handler(StaticHandler.create());
+        router.route(URI_API).handler(this::apiHandler);
+        router.route(URI_STATIC).handler(StaticHandler.create());
     }
 
     private void apiHandler(RoutingContext context) {

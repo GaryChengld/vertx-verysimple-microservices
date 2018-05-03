@@ -24,8 +24,7 @@ import java.util.Set;
 
 import static com.ezshop.common.ConfigKeys.KEY_PORT;
 import static com.ezshop.common.ErrorCodes.SYSTEM_ERROR_CODE;
-import static com.ezshop.common.HttpResponseCodes.SC_INTERNAL_SERVER_ERROR;
-import static com.ezshop.common.HttpResponseCodes.SC_OK;
+import static com.ezshop.common.HttpResponseCodes.*;
 
 /**
  * The abstract verticle which work as HTTP server
@@ -35,8 +34,8 @@ import static com.ezshop.common.HttpResponseCodes.SC_OK;
 public abstract class BaseHttpMicroServicesVerticle extends BaseMicroServicesVerticle {
     private static final Logger logger = LoggerFactory.getLogger(BaseMicroServicesVerticle.class);
     private static final String KEY_ERROR = "error";
-    private static final String KEY_ERROR_CODE = "errorCode";
-    private static final String KEY_ERROR_MESSAGE = "errorMessage";
+    private static final String KEY_ERROR_CODE = "code";
+    private static final String KEY_ERROR_MESSAGE = "message";
 
     /**
      * Create a HTTP server by given config and router
@@ -51,7 +50,7 @@ public abstract class BaseHttpMicroServicesVerticle extends BaseMicroServicesVer
         server.requestStream()
                 .toFlowable()
                 .map(HttpServerRequest::pause)
-                .onBackpressureDrop(req -> req.response().setStatusCode(503).end())
+                .onBackpressureDrop(req -> req.response().setStatusCode(SC_SERVICE_UNAVAILABLE).end())
                 .observeOn(RxHelper.scheduler(vertx.getDelegate()))
                 .subscribe(req -> {
                     req.resume();

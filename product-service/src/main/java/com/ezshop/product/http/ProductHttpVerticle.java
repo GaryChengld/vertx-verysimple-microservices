@@ -9,6 +9,8 @@ import io.vertx.reactivex.ext.web.RoutingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.ezshop.common.ConfigKeys.*;
+
 /**
  * Verticle of product HTTP server
  *
@@ -16,23 +18,20 @@ import org.slf4j.LoggerFactory;
  */
 public class ProductHttpVerticle extends BaseHttpMicroServicesVerticle {
     private static final Logger logger = LoggerFactory.getLogger(ProductHttpVerticle.class);
-
     private static final String URI_ALL_CATEGORIES = "/categories";
 
-    private static final String SERVICE_ADDRESS = "serviceProxyAddress";
-    private static final String KEY_HTTP_SERVER = "httpServer";
     private ProductService productService;
 
     @Override
     public void start(Future<Void> startFuture) {
         super.start();
         logger.debug("Starting Product HTTP Server");
-        this.productService = com.ezshop.product.ProductService.createProxy(vertx, this.config().getString(SERVICE_ADDRESS));
+        this.productService = com.ezshop.product.ProductService.createProxy(vertx, this.config().getString(KEY_SERVICE_ADDRESS));
         JsonObject httpConfig = this.config().getJsonObject(KEY_HTTP_SERVER);
         Router router = Router.router(vertx);
         this.configureRouter(router);
         this.createHttpServer(httpConfig, router)
-                .flatMap(httpServer -> this.publishHttpEndPoint("product", httpConfig))
+                .flatMap(httpServer -> this.publishHttpEndPoint(this.config().getString(KEY_SERVICE_NAME), httpConfig))
                 .subscribe(r -> startFuture.complete(), startFuture::fail);
     }
 

@@ -2,7 +2,379 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for microservices" enabled="true">
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="aggregation-http-a" />
+        <module name="aggregation-http-b" />
+        <module name="aggregation-http-c" />
+        <module name="aggregation-http-d" />
+        <module name="amqp-bridge-examples" />
+        <module name="camel-bridge-examples" />
+        <module name="clustered-application-http" />
+        <module name="clustered-application-service" />
+        <module name="grpc-examples" />
+        <module name="hello-verticle" />
+        <module name="hello-verticle-fatjar" />
+        <module name="heroku-example" />
+        <module name="http2-fatjar" />
+        <module name="ignite-examples" />
+        <module name="junit5-examples" />
+        <module name="kafka-examples" />
+        <module name="kotlin-coroutines-examples" />
+        <module name="maven-service-factory-api" />
+        <module name="maven-service-factory-verticle" />
+        <module name="maven-simplest" />
+        <module name="maven-verticle" />
+        <module name="maven-verticle-compiled-groovy" />
+        <module name="maven-verticle-groovy" />
+        <module name="maven-verticle-javascript" />
+        <module name="maven-verticle-ruby" />
+        <module name="osgi-examples" />
+        <module name="pipeline-http-a" />
+        <module name="pipeline-http-b" />
+        <module name="pipeline-http-c" />
+        <module name="pipeline-http-d" />
+        <module name="resteasy-examples" />
+        <module name="ruby-fatjar" />
+        <module name="rx-java1-examples" />
+        <module name="service-discovery-examples" />
+        <module name="spring-example" />
+        <module name="spring-verticle-factory" />
+        <module name="springboot-clustering-hazelcast" />
+        <module name="springboot-example" />
+        <module name="sync-examples" />
+        <module name="vertx-docker-example" />
+        <module name="vertx-docker-example-fabric" />
+        <module name="vertx-greeting-application" />
+        <module name="vertx-id-generator" />
+        <module name="vertx-jca-examples-app" />
+        <module name="vertx-jca-examples-ejb" />
+        <module name="vertx-jca-examples-web" />
+        <module name="vertx-kubernetes-client-application" />
+        <module name="vertx-kubernetes-greeting-application" />
+        <module name="wiki-step-1" />
+        <module name="wiki-step-2" />
+      </profile>
+      <profile name="Annotation profile for rxjava-2-examples" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-examples-master\rxjava-2-examples/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="rxjava-2-examples" />
+      </profile>
+      <profile name="Annotation profile for core-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\core-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\core-examples/src/main" />
+        <module name="core-examples" />
+      </profile>
+      <profile name="Annotation profile for sockjs-proxies-examples" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\service-proxy-examples\sockjs-proxies/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\service-proxy-examples\sockjs-proxies/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="sockjs-proxies-examples" />
+      </profile>
+      <profile name="Annotation profile for shell-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\shell-examples/src/main" />
+        <module name="shell-examples" />
+      </profile>
+      <profile name="Annotation profile for web-client-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\web-client-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\web-client-examples/src/main" />
+        <module name="web-client-examples" />
+      </profile>
+      <profile name="Annotation profile for circuit-breaker-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\circuit-breaker-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\circuit-breaker-examples/src/main" />
+        <module name="circuit-breaker-examples" />
+      </profile>
+      <profile name="Annotation profile for service-provider" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-examples-master\service-proxy-examples\service-provider/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="service-provider" />
+      </profile>
+      <profile name="Annotation profile for jdbc-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\jdbc-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\jdbc-examples/src/main" />
+        <module name="jdbc-examples" />
+      </profile>
+      <profile name="Annotation profile for mail-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\mail-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\mail-examples/src/main" />
+        <module name="mail-examples" />
+      </profile>
+      <profile name="Annotation profile for redis-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\redis-examples/src/main" />
+        <module name="redis-examples" />
+      </profile>
+      <profile name="Annotation profile for metrics-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\metrics-examples/src/main" />
+        <module name="metrics-examples" />
+      </profile>
+      <profile name="Annotation profile for unit-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\unit-examples/src/main" />
+        <module name="unit-examples" />
+      </profile>
+      <profile name="Annotation profile for consul-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\consul-examples/src/main" />
+        <module name="consul-examples" />
+      </profile>
+      <profile name="Annotation profile for mqtt-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\mqtt-examples/src/main" />
+        <module name="mqtt-examples" />
+      </profile>
+      <profile name="Annotation profile for web-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.config" value="E:\Workspaces\vertx\vertx-examples-master\web-examples/codetrans-config.json" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\web-examples/src/main" />
+        <module name="web-examples" />
+      </profile>
+      <profile name="Annotation profile for mongo-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\mongo-examples/src/main" />
+        <module name="mongo-examples" />
+      </profile>
+      <profile name="Annotation profile for vertx-microservice-workshop" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="audit-service" />
+        <module name="compulsive-traders" />
+        <module name="portfolio-service" />
+        <module name="quote-generator" />
+        <module name="trader-dashboard" />
+        <module name="vertx-workshop-common" />
+      </profile>
+      <profile name="Annotation profile for microservice-blueprint-common" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\microservice-blueprint-common/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="microservice-blueprint-common" />
+      </profile>
+      <profile name="Annotation profile for inventory-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\inventory-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="inventory-microservice" />
+      </profile>
+      <profile name="Annotation profile for product-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\product-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="product-microservice" />
+      </profile>
+      <profile name="Annotation profile for account-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\account-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="account-microservice" />
+      </profile>
+      <profile name="Annotation profile for api-gateway" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\api-gateway/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="api-gateway" />
+      </profile>
+      <profile name="Annotation profile for order-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\order-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="order-microservice" />
+      </profile>
+      <profile name="Annotation profile for payment-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\payment-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="payment-microservice" />
+      </profile>
+      <profile name="Annotation profile for shopping-cart-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\shopping-cart-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="shopping-cart-microservice" />
+      </profile>
+      <profile name="Annotation profile for store-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\store-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="store-microservice" />
+      </profile>
+      <profile name="Annotation profile for monitor-dashboard" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\monitor-dashboard/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="monitor-dashboard" />
+      </profile>
+      <profile name="Annotation profile for shopping-ui" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\shopping-ui/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="shopping-ui" />
+      </profile>
+      <profile name="Annotation profile for cache-infrastructure" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\cache-infrastructure/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="cache-infrastructure" />
+      </profile>
+      <profile name="Annotation profile for recommendation-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\recommendation-microservice/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="recommendation-microservice" />
+      </profile>
+      <profile name="Annotation profile for vertx-ezshop-common" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-example-microservices\common/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="vertx-ezshop-common" />
+      </profile>
+      <profile name="Annotation profile for vertx-ezshop-gateway" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-example-microservices\api-gateway/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="vertx-ezshop-gateway" />
+      </profile>
+      <profile name="Annotation profile for vertx-ezshop-product" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-example-microservices\product-service/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="vertx-ezshop-product" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-3" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-3/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-3" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-8" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-8/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-8" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-7" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-7/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-7" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-6" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-6/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-6" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-5" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-5/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-5" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-10" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-10/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-10" />
+      </profile>
+      <profile name="Annotation profile for wiki-step-9" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-9/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-9" />
+      </profile>
+      <profile name="Annotation profile for vertx-ezshop" enabled="true">
         <sourceOutputDir name="src/main/generated" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -10,10 +382,148 @@
         <processor name="io.vertx.codegen.CodeGenProcessor" />
         <module name="examples" />
       </profile>
+      <profile name="Annotation profile for vertx-examples" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codetrans.output" value="E:\Workspaces\vertx\vertx-examples-master\service-proxy-examples\service-consumer/src/main" />
+        <module name="service-consumer" />
+      </profile>
+      <profile name="Annotation profile for vertx-blueprint-microservice" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="src/test/generated" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="codegen.output" value="E:\Workspaces\vertx\vertx-blueprint-microservice-master\database-middleware/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="database-middleware" />
+      </profile>
+      <profile name="Annotation profile for guide-for-java-devs" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="E:\Workspaces\vertx\vertx-guide-for-java-devs-master\step-4/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="wiki-step-4" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="account-microservice" target="1.8" />
+      <module name="aggregation-http" target="1.8" />
+      <module name="aggregation-http-a" target="1.8" />
+      <module name="aggregation-http-b" target="1.8" />
+      <module name="aggregation-http-c" target="1.8" />
+      <module name="aggregation-http-d" target="1.8" />
+      <module name="amqp-bridge-examples" target="1.8" />
+      <module name="api-gateway" target="1.8" />
+      <module name="audit-service" target="1.8" />
+      <module name="cache-infrastructure" target="1.8" />
+      <module name="camel-bridge-examples" target="1.8" />
+      <module name="circuit-breaker-examples" target="1.8" />
+      <module name="clustered-application-http" target="1.8" />
+      <module name="clustered-application-service" target="1.8" />
+      <module name="compulsive-traders" target="1.8" />
+      <module name="consul-examples" target="1.8" />
+      <module name="core-examples" target="1.8" />
+      <module name="database-middleware" target="1.8" />
       <module name="examples" target="1.8" />
-      <module name="vertx-example-microservices" target="1.8" />
+      <module name="examples-utils" target="1.8" />
+      <module name="grpc-examples" target="1.8" />
+      <module name="guide-for-java-devs" target="1.5" />
+      <module name="hello-verticle" target="1.8" />
+      <module name="hello-verticle-fatjar" target="1.8" />
+      <module name="heroku-example" target="1.8" />
+      <module name="http2-fatjar" target="1.8" />
+      <module name="ignite-examples" target="1.8" />
+      <module name="inventory-microservice" target="1.8" />
+      <module name="jdbc-examples" target="1.8" />
+      <module name="junit5-examples" target="1.8" />
+      <module name="kafka-examples" target="1.8" />
+      <module name="kotlin-coroutines-examples" target="1.8" />
+      <module name="mail-examples" target="1.8" />
+      <module name="maven-service-factory-api" target="1.8" />
+      <module name="maven-service-factory-examples" target="1.5" />
+      <module name="maven-service-factory-verticle" target="1.8" />
+      <module name="maven-simplest" target="1.8" />
+      <module name="maven-verticle" target="1.8" />
+      <module name="maven-verticle-compiled-groovy" target="1.5" />
+      <module name="maven-verticle-groovy" target="1.5" />
+      <module name="maven-verticle-javascript" target="1.5" />
+      <module name="maven-verticle-ruby" target="1.5" />
+      <module name="maven-verticles-examples" target="1.5" />
+      <module name="metrics-examples" target="1.8" />
+      <module name="microservice-blueprint-common" target="1.8" />
+      <module name="mongo-examples" target="1.8" />
+      <module name="monitor-dashboard" target="1.8" />
+      <module name="mqtt-examples" target="1.8" />
+      <module name="openshift3-examples" target="1.5" />
+      <module name="order-microservice" target="1.8" />
+      <module name="osgi-examples" target="1.8" />
+      <module name="payment-microservice" target="1.8" />
+      <module name="pipeline-http" target="1.8" />
+      <module name="pipeline-http-a" target="1.8" />
+      <module name="pipeline-http-b" target="1.8" />
+      <module name="pipeline-http-c" target="1.8" />
+      <module name="pipeline-http-d" target="1.8" />
+      <module name="portfolio-service" target="1.8" />
+      <module name="product-microservice" target="1.8" />
+      <module name="quote-generator" target="1.8" />
+      <module name="recommendation-microservice" target="1.8" />
+      <module name="redis-examples" target="1.8" />
+      <module name="resteasy-examples" target="1.8" />
+      <module name="ruby-fatjar" target="1.5" />
+      <module name="rx-java1-examples" target="1.8" />
+      <module name="rxjava-2-examples" target="1.8" />
+      <module name="samples" target="1.8" />
+      <module name="service-consumer" target="1.8" />
+      <module name="service-discovery-examples" target="1.8" />
+      <module name="service-provider" target="1.8" />
+      <module name="service-proxy-examples" target="1.5" />
+      <module name="shell-examples" target="1.8" />
+      <module name="shopping-cart-microservice" target="1.8" />
+      <module name="shopping-ui" target="1.8" />
+      <module name="sockjs-proxies-examples" target="1.8" />
+      <module name="spring-example" target="1.8" />
+      <module name="spring-examples" target="1.5" />
+      <module name="spring-verticle-factory" target="1.8" />
+      <module name="springboot-clustering" target="1.5" />
+      <module name="springboot-clustering-hazelcast" target="1.8" />
+      <module name="springboot-example" target="1.8" />
+      <module name="store-microservice" target="1.8" />
+      <module name="sync-examples" target="1.8" />
+      <module name="trader-dashboard" target="1.8" />
+      <module name="unit-examples" target="1.8" />
+      <module name="vertx-blueprint-microservice" target="1.8" />
+      <module name="vertx-docker-example" target="1.8" />
+      <module name="vertx-docker-example-fabric" target="1.8" />
+      <module name="vertx-examples" target="1.5" />
+      <module name="vertx-ezshop-common" target="1.8" />
+      <module name="vertx-ezshop-gateway" target="1.8" />
+      <module name="vertx-ezshop-product" target="1.8" />
+      <module name="vertx-greeting-application" target="1.8" />
+      <module name="vertx-id-generator" target="1.8" />
+      <module name="vertx-jca-examples" target="1.5" />
+      <module name="vertx-jca-examples-app" target="1.5" />
+      <module name="vertx-jca-examples-ejb" target="1.8" />
+      <module name="vertx-jca-examples-web" target="1.8" />
+      <module name="vertx-kubernetes-applications" target="1.5" />
+      <module name="vertx-kubernetes-client-application" target="1.8" />
+      <module name="vertx-kubernetes-greeting-application" target="1.8" />
+      <module name="vertx-microservice-ezshop" target="1.8" />
+      <module name="vertx-microservice-workshop" target="1.8" />
+      <module name="vertx-openshift-applications" target="1.5" />
+      <module name="vertx-workshop-common" target="1.8" />
+      <module name="web-client-examples" target="1.8" />
+      <module name="web-examples" target="1.8" />
+      <module name="wiki-step-1" target="1.8" />
+      <module name="wiki-step-10" target="1.8" />
+      <module name="wiki-step-2" target="1.8" />
+      <module name="wiki-step-3" target="1.8" />
+      <module name="wiki-step-4" target="1.8" />
+      <module name="wiki-step-5" target="1.8" />
+      <module name="wiki-step-6" target="1.8" />
+      <module name="wiki-step-7" target="1.8" />
+      <module name="wiki-step-8" target="1.8" />
+      <module name="wiki-step-9" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

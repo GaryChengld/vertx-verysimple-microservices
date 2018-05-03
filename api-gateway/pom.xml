@@ -9,9 +9,11 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>ezshop-gateway</artifactId>
+
   <properties>
     <main.verticle>com.ezshop.gateway.ApiGatewayVerticle</main.verticle>
   </properties>
+
   <dependencies>
     <dependency>
       <groupId>vertx.microservice.ezshop</groupId>
